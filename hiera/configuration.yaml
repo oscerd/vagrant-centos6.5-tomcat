@@ -1,0 +1,7 @@
+---
+tomcat::params::http_port: 8082
+tomcat::params::https_port: 8083
+tomcat::params::ajp_port: 8007
+tomcat::params::shutdown_port: 8001
+tomcat::params::http_connection_timeout: 20000
+tomcat::params::https_max_threads: 150

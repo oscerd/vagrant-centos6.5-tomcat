@@ -1,0 +1,1 @@
+Put your Oracle Java package in this folder, don't rename it. In the java::setup specify the family (e.g. "7", "8"), the update version (e.g. "65", "60", "55"), the OS (e.g. "Linux", "Solaris") and the architecture (e.g. "x64", "i586").

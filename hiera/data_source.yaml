@@ -1,0 +1,13 @@
+---
+tomcat::data_source::ds_resource_name: jdbc/ExampleDB
+tomcat::data_source::ds_max_active: 100
+tomcat::data_source::ds_max_idle: 20
+tomcat::data_source::ds_max_wait: 10000
+tomcat::data_source::ds_username: username
+tomcat::data_source::ds_password: password
+tomcat::data_source::ds_driver_class_name: oracle.jdbc.OracleDriver
+tomcat::data_source::ds_driver: jdbc
+tomcat::data_source::ds_dbms: oracle
+tomcat::data_source::ds_host: 192.168.52.128
+tomcat::data_source::ds_port: 1521
+tomcat::data_source::ds_service: example
