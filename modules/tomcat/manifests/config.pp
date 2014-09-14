@@ -3,4 +3,5 @@
 class tomcat::config{
   $server_xml = "/conf/server.xml"
   $context_xml = "/conf/context.xml"
+  $users_xml = "/conf/tomcat-users.xml"
 }

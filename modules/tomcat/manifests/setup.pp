@@ -8,12 +8,15 @@ define tomcat::setup (
   $installdir = undef,
   $install_mode = undef,
   $data_source = undef,
+  $users = undef,
+  $access_log = undef,
   $direct_start = undef
   ) { 
   
   include tomcat::params
   include tomcat::data_source
   include tomcat::config
+  include tomcat::users
   
   # Validate parameters presence   
   if ($family == undef) {
@@ -40,6 +43,10 @@ define tomcat::setup (
     fail('data source parameter must be set')
   }
   
+  if ($users == undef) {
+    fail('users parameter must be set')
+  }
+  
   # Validate parameters  
   
   if (($family != '6') and ($family != '7') and ($family != '8')) {
@@ -62,6 +69,10 @@ define tomcat::setup (
     fail('data source parameter must have value "yes" or "no"')
   }
   
+  if (($users != 'yes') and ($users != 'no')) {
+    fail('users parameter must have value "yes" or "no"')
+  }
+  
   if ($installdir == undef){
     notify{'Install folder not specified, setting default install folder /opt/':}
     $defined_installdir ='/opt/'
@@ -82,6 +93,12 @@ define tomcat::setup (
     $start = $direct_start
   }
   
+  if($access_log == undef){
+    $defined_access_log = "no"
+  } else {
+    $defined_access_log = $access_log
+  }
+  
   if ($extension == ".zip"){
     $extractor_command = "unzip"
     $extractor_option_source = ""
@@ -95,6 +112,7 @@ define tomcat::setup (
   }
   
   $tomcat = "apache-tomcat"
+  $web_repo_path = hiera('tomcat::params::web_repository')
   
   if ($source_mode == "local"){
   file { "${defined_tmpdir}${tomcat}-${family}.0.${update_version}${extension}":
@@ -111,7 +129,7 @@ define tomcat::setup (
           alias => extract_tomcat } 
   }
   elsif ($source_mode == "web"){ 
-  $source = "http://apache.fastbull.org/tomcat/tomcat-${family}/v${family}.0.${update_version}/bin/${tomcat}-${family}.0.${update_version}${extension}"
+  $source = "${web_repo_path}tomcat-${family}/v${family}.0.${update_version}/bin/${tomcat}-${family}.0.${update_version}${extension}"
 
   exec { 'retrieve_tomcat': 
           command => "wget -q ${source} -P ${defined_tmpdir}",
@@ -151,7 +169,15 @@ define tomcat::setup (
             group   => 'root',
             require => Exec['move_tomcat'],
             mode    => '0644',
-            content => template('tomcat/context.erb') }           
+            content => template('tomcat/context.erb') }      
+            
+            file { "usersxml":
+            path    => "${defined_installdir}${tomcat}-${family}.0.${update_version}${tomcat::config::users_xml}",
+            owner   => 'root',
+            group   => 'root',
+            require => Exec['move_tomcat'],
+            mode    => '0644',
+            content => template('tomcat/users.erb') }      
   }
   
   exec { 'clean_tomcat': 
