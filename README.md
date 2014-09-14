@@ -16,7 +16,7 @@ Settings
 This machine contains:
 
  * The following box: https://vagrantcloud.com/puppetlabs/centos-6.5-64-puppet
- * The puppet Tomcat module: https://github.com/oscerd/puppet-tomcat-module ver 1.0.1
+ * The puppet Tomcat module: https://github.com/oscerd/puppet-tomcat-module ver 1.0.2
  * The puppet Java module: https://github.com/oscerd/puppet-java-module ver 1.0.1
 
 In the `/modules/tomcat/files` put the following files:
@@ -99,6 +99,7 @@ In _hiera.yaml_ you'll see
 	:hierarchy:
 	  - "data_source"
 	  - "configuration"
+	  - "users"
 
 	:yaml:
 	  :datadir: '/vagrant/hiera'
@@ -122,7 +123,7 @@ in `/hiera/data_source.yaml` there are the parameters to customize data source:
 	tomcat::data_source::ds_service: example
 ```
 
-while in `/hiera/configuration.yaml` there are the parameters to customize port:
+in `/hiera/configuration.yaml` there are the parameters to customize port and web repository:
 
 ```yaml
 	---
@@ -132,6 +133,32 @@ while in `/hiera/configuration.yaml` there are the parameters to customize port:
 	tomcat::params::shutdown_port: 8001
 	tomcat::params::http_connection_timeout: 20000
 	tomcat::params::https_max_threads: 150
+	tomcat::params::web_repository: http://apache.fastbull.org/tomcat/
+```
+
+in `/hiera/users.yaml` there are the parameters to customize tomcat users:
+
+```yaml
+	---
+	tomcat::roles::list:
+	      - manager-gui
+	      - manager-script
+	      - manager-jmx
+	      - manager-status
+	      - admin-gui
+	      - admin-script
+
+	tomcat::users::list:
+	      - username: pippo
+		password: paperino
+	      - username: topolino
+		password: minnie
+
+	tomcat::users::map:
+	      - username: pippo
+		roles: manager-gui,admin-gui
+	      - username: topolino
+		roles: manager-gui
 ```
 
 With the standard `/manifests/init.pp` the Tomcat installation is set to _clean_, if you choose to change it to _custom_, remember to change port forwarding properties in Vagrantfile:
