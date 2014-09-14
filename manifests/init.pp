@@ -30,6 +30,8 @@ tomcat::setup { "tomcat":
   tmpdir => "/tmp/",
   install_mode => "clean",
   data_source => "no",
+  users => "yes",
+  access_log => "yes",
   direct_start => "yes"
   }
 

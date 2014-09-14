@@ -1,0 +1,20 @@
+---
+tomcat::roles::list:
+      - manager-gui
+      - manager-script
+      - manager-jmx
+      - manager-status
+      - admin-gui
+      - admin-script
+
+tomcat::users::list:
+      - username: pippo
+        password: paperino
+      - username: topolino
+        password: minnie
+
+tomcat::users::map:
+      - username: pippo
+        roles: manager-gui,admin-gui
+      - username: topolino
+        roles: manager-gui
