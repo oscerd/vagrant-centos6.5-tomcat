@@ -150,15 +150,15 @@ in `/hiera/users.yaml` there are the parameters to customize tomcat users:
 
 	tomcat::users::list:
 	      - username: pippo
-		password: paperino
+		    password: paperino
 	      - username: topolino
-		password: minnie
+		    password: minnie
 
 	tomcat::users::map:
 	      - username: pippo
-		roles: manager-gui,admin-gui
+		    roles: manager-gui,admin-gui
 	      - username: topolino
-		roles: manager-gui
+		    roles: manager-gui
 ```
 
 With the standard `/manifests/init.pp` the Tomcat installation is set to _clean_, if you choose to change it to _custom_, remember to change port forwarding properties in Vagrantfile:
