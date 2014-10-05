@@ -4,7 +4,7 @@ Puppet Tomcat Module
 Introduction
 -----------------
 
-This module install Tomcat with puppet
+This Puppet module install Tomcat (customized or clean) and make possible to deploy packages on it
 
 Installation
 -----------------
@@ -23,6 +23,42 @@ in a specific directory. If you set the source_mode `local` the tomcat package m
 folder. The module will do the same operations without download the package. If you need to deploy a war directly, you can use tomcat::deploy. The war must be placed in `/tomcat/files/`.
 For more information about the parameters definition see Parameters section. In this example we refer to a generic sample.war package. This is the sample application from 
 Apache Community and it comes from this url: __https://tomcat.apache.org/tomcat-7.0-doc/appdev/sample/__
+
+If you want to install tomcat and deploy your package with a specific context you can use this example manifest:
+
+```puppet
+	tomcat::setup { "tomcat":
+	  family => "7",
+	  update_version => "55",
+	  extension => ".zip",
+	  source_mode => "local",
+	  installdir => "/opt/",
+	  tmpdir => "/tmp/",
+	  install_mode => "custom",
+	  data_source => "yes",
+	  users => "yes",
+	  access_log => "yes",
+	  direct_start => "yes"
+	  }
+
+	tomcat::deploy { "deploy":
+	  war_name => "sample",
+	  war_versioned => "no",
+	  war_version => "",
+	  deploy_path => "/release/",
+	  context => "/example",
+	  external_conf => "yes",
+	  external_dir => "report/",
+	  external_conf_path => "/conf/",
+	  family => "7",
+	  update_version => "55",
+	  installdir => "/opt/",
+	  tmpdir => "/tmp/",
+	  require => Tomcat::Setup["tomcat"]
+	  }
+```
+
+Otherwise if you just need to install tomcat and deploy a package, without specify a context you can use this example manifest:
 
 ```puppet
 	tomcat::setup { "tomcat":
@@ -44,6 +80,10 @@ Apache Community and it comes from this url: __https://tomcat.apache.org/tomcat-
 	  war_versioned => "no",
 	  war_version => "",
 	  deploy_path => "/webapps/",
+	  context => "",
+	  external_conf => "yes",
+	  external_dir => "report/",
+	  external_conf_path => "/conf/",
 	  family => "7",
 	  update_version => "55",
 	  installdir => "/opt/",
@@ -70,6 +110,8 @@ are installed on the target system:
 	}
 ```
 
+For more information about the module settings and module parameters read the instructions following sections.
+
 Parameters
 -----------------
 
@@ -83,7 +125,7 @@ The Puppet Tomcat module use the following parameters in his setup phase
 *  __Temp Directory__: The directory where the Apache Tomcat package will be extracted (default is `/tmp/`)
 *  __Install Mode__: The installation mode, possible values _clean_ and _custom_. With install mode _clean_ the module will only install Apache Tomcat, while with install mode _custom_ the module will install Apache Tomcat with a customizable version of `server.xml`
 *  __Data Source__: Define the data source's presence, possible values _yes_ and _no_. If the data source value is _yes_ (and the installation mode value is _custom_ ) then the module will add data source section in `server.xml` and `context.xml`
-*  __Access Log__: Defined if Apache Tomcat access log is enabled, possible values _yes_ and _no_ (default is _no_)
+*  __Access Log__: Defined if Apache Tomcat access log is enabled, possible values _yes_ and _no_ (default is _no_) and it is used in _custom_ installation
 *  __Direct Start__: Define if Tomcat must directly start, possible values _yes_ and _no_ (default is _no_)
 
 The Puppet Tomcat module use the following parameters in his deploy phase
@@ -92,6 +134,12 @@ The Puppet Tomcat module use the following parameters in his deploy phase
 *  __War Versioned__: This variable defines if a the deploying war is versioned or not. Possible values _yes_ or _no_ (default is _no_)
 *  __War Version__: The version of the deploying war. This variable will be ignored if war versioned value is _no_
 *  __Deploy Path__: The location where the war must be placed (default is `/webapps/`) 
+*  __Context__: The context of the package we are deploying. If _deploy path_ is different from `/webapps/` then the context will be considered, otherwise it will be skipped.
+*  __External Conf__: This variable defines if the package we are deploying has an external configuration to install. Possible values _yes_ or _no_ (default is _no_)
+*  __External Dir__: The directory that contains the external configuration of the package. The module will search for this directory in `tomcat/files/` folder. If external_conf is equal to _no_, then 
+this variable will be ignored. If external_conf is equal to _yes_ this variable must be specified.
+*  __External Conf Path__: The Tomcat directory that will contains the external configuration directory of the package. Default value is _/conf/_. If external_conf is equal to _no_, then 
+this variable will be ignored. If external_conf is equal to _yes_ this variable must be specified.
 *  __Family__: Possible values of Apache Tomcat version _6_, _7_, _8_ 
 *  __Update Version__: The update version of Apache Tomcat
 *  __Install Directory__: The directory where the Apache Tomcat is installed (default is `/opt/`)

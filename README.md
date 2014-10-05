@@ -16,7 +16,7 @@ Settings
 This machine contains:
 
  * The following box: https://vagrantcloud.com/puppetlabs/centos-6.5-64-puppet
- * The puppet Tomcat module: https://github.com/oscerd/puppet-tomcat-module ver 1.0.2
+ * The puppet Tomcat module: https://github.com/oscerd/puppet-tomcat-module ver 1.0.3
  * The puppet Java module: https://github.com/oscerd/puppet-java-module ver 1.0.1
 
 In the `/modules/tomcat/files` put the following files:
@@ -74,7 +74,11 @@ After settings let's take a look to `/manifests/init.pp`:
 	  war_name => "sample",
 	  war_versioned => "no",
 	  war_version => "",
-	  deploy_path => "/webapps/",
+	  deploy_path => "/release/",
+	  context => "/mycontext",
+	  external_conf => "no",
+	  external_dir => "",
+	  external_conf_path => "",
 	  family => "7",
 	  update_version => "55",
 	  installdir => "/opt/",
@@ -178,7 +182,8 @@ Now you're ready to do:
 	vagrant up
 ```
 
-After setting phase vagrant will start provisioning and Puppet will install Java and Tomcat. With the standard `/manifests/init.pp` Puppet will start Tomcat and deploy sample.war in /webapps/ folder
+After starting phase vagrant will start provisioning and Puppet will install Java and Tomcat. With the standard `/manifests/init.pp` Puppet will start Tomcat and deploy sample.war in /webapps/ folder.
+If you choose to set a different deploy path, you have to specify a context, in the example we set context to `/mycontext` and deploy_path to `/release/`, so the webapp will be visible at __http://localhost:9902/mycontext/__
 
 Remember
 ----------------- 
@@ -201,6 +206,6 @@ or add in `/manifests/init.pp` the following code fragment:
 	include iptables
 ```
 
-otherwise you will not see anything on __http://localhost:9902/sample/__
+otherwise you will not see anything on __http://localhost:9902/mycontext/__
 
 

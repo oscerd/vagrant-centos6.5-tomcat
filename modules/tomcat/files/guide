@@ -1,2 +1,3 @@
 Put your Tomcat package in this folder, don't rename it. In the java::setup specify the family (e.g. "6", "7", "8"), the update version (e.g. "40", "55", "60") and the installation mode ("web" or "local").
-If you need to deploy a war put it in this folder. In tests/init.pp manifest example sample.war it's used to test the deploy. This package comes from Apache Community, it's a sample application from the following url https://tomcat.apache.org/tomcat-7.0-doc/appdev/sample/
+If you need to deploy a war put it in this folder. In tests/init.pp manifest example sample.war it's used to test the deploy. This package comes from Apache Community, it's a sample application from the following url https://tomcat.apache.org/tomcat-7.0-doc/appdev/sample/.
+If your package has an external configuration directory, put that directory in this folder and specify it in tomcat::deploy in external_dir parameter
