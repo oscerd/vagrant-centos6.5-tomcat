@@ -66,7 +66,9 @@ After settings let's take a look to `/manifests/init.pp`:
 	  installdir => "/opt/",
 	  tmpdir => "/tmp/",
 	  install_mode => "clean",
-	  data_source => "no",
+	  data_source => "no", 
+	  users => "yes",
+	  access_log => "yes",
 	  direct_start => "yes"
 	  }
 
