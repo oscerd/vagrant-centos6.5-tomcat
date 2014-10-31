@@ -45,7 +45,7 @@
               factory="org.apache.catalina.users.MemoryUserDatabaseFactory"
               pathname="conf/tomcat-users.xml" />
 
-   <% if data_source == "yes" and install_mode == "custom" %>
+   <% if @data_source == "yes" and @install_mode == "custom" %>
    <Resource 
 	name="<%= scope.lookupvar('tomcat::data_source::ds_resource_name') %>" 
 	auth="Container"
@@ -99,9 +99,12 @@
          style configuration. When using the APR/native implementation, the
          OpenSSL style configuration is required as described in the APR/native
          documentation -->
+  <% if @ssl == "yes" and @install_mode == "custom" %>
     <Connector port="<%= scope.lookupvar('tomcat::params::https_port')%>" protocol="org.apache.coyote.http11.Http11Protocol"
                maxThreads="<%= scope.lookupvar('tomcat::params::https_max_threads')%>" SSLEnabled="true" scheme="https" secure="true"
-               clientAuth="false" sslProtocol="TLS" />
+               clientAuth="false" sslProtocol="TLS" keystoreFile="${catalina.home}/conf/<%= scope.lookupvar('tomcat::params::https_keystore')%>" 
+               keystorePass="<%= scope.lookupvar('tomcat::params::https_keystore_pwd')%>" />
+  <% end %>
 
     <!-- Define an AJP 1.3 Connector on port 8009 -->
     <Connector port="<%= scope.lookupvar('tomcat::params::ajp_port') %>" protocol="AJP/1.3" redirectPort="8443" />
@@ -139,7 +142,7 @@
       <Host name="localhost"  appBase="webapps"
             unpackWARs="true" autoDeploy="true">
 
-       <% if defined_access_log == "yes" %>
+       <% if @defined_access_log == "yes" %>
         <!-- SingleSignOn valve, share authentication between web applications
              Documentation at: /docs/config/valve.html -->
         <!--

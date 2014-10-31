@@ -11,3 +11,9 @@ tomcat::data_source::ds_dbms: oracle
 tomcat::data_source::ds_host: 192.168.52.128
 tomcat::data_source::ds_port: 1521
 tomcat::data_source::ds_service: example
+tomcat::data_source::ds_drivername: ojdbc6.jar
+
+
+
+
+

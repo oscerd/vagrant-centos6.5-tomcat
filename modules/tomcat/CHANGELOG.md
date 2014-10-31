@@ -1,3 +1,13 @@
+## 26-10-2014 - Release - 1.0.4
+### Summary
+- This release add the possibility to add a DB driver to Tomcat lib folder and use it for the data source configuration in tomcat::setup stage
+- The .erb templates file are now divided for Tomcat version (6,7 and 8 are supported)
+- This release add optional SSL support in tomcat::setup stage
+- This release add optional symbolic link to define context of a versioned .war package
+- This release add the possibility to install tomcat as service
+- This release add optional hot deploy in tomcat::deploy stage
+- This release add a new stage to the module, tomcat::undeploy, that allow to undeploy a war package previously deployed on Tomcat
+
 ## 05-10-2014 - Release - 1.0.3
 ### Summary
 - This release add the possibility to specify a particular context related to the deploying package

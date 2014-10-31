@@ -23,8 +23,11 @@ tomcat::setup { "tomcat":
   tmpdir => "/tmp/",
   install_mode => "custom",
   data_source => "yes",
+  driver_db => "yes",
+  ssl => "no",
   users => "yes",
   access_log => "yes",
+  as_service => "yes",
   direct_start => "yes"
   }
 
@@ -34,6 +37,7 @@ tomcat::deploy { "deploy":
   war_version => "",
   deploy_path => "/release/",
   context => "/example",
+  symbolic_link => "",
   external_conf => "yes",
   external_dir => "report/",
   external_conf_path => "",
@@ -41,6 +45,26 @@ tomcat::deploy { "deploy":
   update_version => "55",
   installdir => "/opt/",
   tmpdir => "/tmp/",
+  hot_deploy => "yes",
+  as_service => "yes",
+  direct_restart => "yes",
   require => Tomcat::Setup["tomcat"]
   }
 
+tomcat::undeploy{ "undeploy":
+  war_name => "sample",
+  war_versioned => "no",
+  war_version => "",
+  deploy_path => "/release/",
+  context => "/example",
+  symbolic_link => "",
+  external_conf => "yes",
+  external_dir => "report/",
+  external_conf_path => "",
+  family => "7",
+  update_version => "55",
+  installdir => "/opt/",
+  as_service => "yes",
+  direct_restart => "yes",
+  require =>  Tomcat::Deploy["deploy"]
+}

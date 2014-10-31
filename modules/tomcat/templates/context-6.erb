@@ -31,7 +31,7 @@
     <!--
     <Valve className="org.apache.catalina.valves.CometConnectionManagerValve" />
     -->
-   <% if data_source == "yes" and install_mode == "custom" %>
+   <% if @data_source == "yes" and @install_mode == "custom" %>
 <ResourceLink name="<%= scope.lookupvar('tomcat::data_source::ds_resource_name') %>" global="<%= scope.lookupvar('tomcat::data_source::ds_resource_name') %>" auth="Container" type="javax.sql.DataSource" />  
    <% end %>
 </Context>

@@ -34,7 +34,7 @@
   <user username="role1" password="tomcat" roles="role1"/>
 -->
 
-   <% if users == "yes"%>
+   <% if @users == "yes"%>
 
         <% scope.lookupvar('tomcat::users::tomcat_roles').each do |role| %>
              <role rolename="<%= role %>"/>

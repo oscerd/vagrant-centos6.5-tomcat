@@ -36,4 +36,6 @@ class tomcat::data_source{
   
   # Complete URL
   $ds_url = "${ds_driver}:${ds_dbms}:thin:@${ds_host}:${ds_port}/${ds_service}"
+  
+  $ds_drivername = hiera('tomcat::data_source::ds_drivername')
 }

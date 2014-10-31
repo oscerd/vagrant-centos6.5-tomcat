@@ -1,0 +1,6 @@
+<% if @defined_symbolic_link == "no" %>
+<Context docBase="<%= @installdir %><%= @tomcat %>-<%= @family %>.0.<%= @update_version %><%= @deploy_path %><%= @war_name %><% if @war_versioned == "yes" %>-<%= @war_version %><% end %>.war" path="<%= @context %>" reloadable="true" swallowOutput="true"/>
+<% end %>
+<% else %>
+<Context docBase="<%= @installdir %><%= @tomcat %>-<%= @family %>.0.<%= @update_version %><%= @deploy_path %><%= @war_name %>.war" path="<%= @context %>" reloadable="true" swallowOutput="true"/>
+<% end %>

@@ -23,4 +23,10 @@ class tomcat::params{
   
   # Set max threads in https connector in serverxml.erb
   $https_max_threads = hiera('tomcat::params::https_max_threads')
+  
+  # Set the keystore file
+  $https_keystore = hiera('tomcat::params::https_keystore')
+  
+  # Set the keystore file password
+  $https_keystore_pwd = hiera('tomcat::params::https_keystore_pwd')
 }

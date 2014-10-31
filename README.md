@@ -16,7 +16,7 @@ Settings
 This machine contains:
 
  * The following box: https://vagrantcloud.com/puppetlabs/centos-6.5-64-puppet
- * The puppet Tomcat module: https://github.com/oscerd/puppet-tomcat-module ver 1.0.3
+ * The puppet Tomcat module: https://github.com/oscerd/puppet-tomcat-module ver 1.0.4
  * The puppet Java module: https://github.com/oscerd/puppet-java-module ver 1.0.1
 
 In the `/modules/tomcat/files` put the following files:
@@ -28,6 +28,8 @@ In the `/modules/java/files` put the following file:
 
  * A jdk-7u65-linux-x64.tar.gz Oracle JDK (or other version)
 
+If you want to customize this example please follows the __customization__ section of https://github.com/oscerd/puppet-tomcat-module instructions
+
 Manifests
 -----------------
 
@@ -38,13 +40,13 @@ After settings let's take a look to `/manifests/init.pp`:
 	Exec {
 	  path => ["/bin/", "/sbin/", "/usr/bin/", "/usr/sbin/"] }
 
-	  package { 'tar':
-	      ensure => installed
-	  }
+	package { 'tar':
+	  ensure => installed
+	}
 
-	  package { 'unzip':
-	      ensure => installed
-	  }
+	package { 'unzip':
+	  ensure => installed
+	}
 
 	java::setup { "java":
 	  type => "jdk",
@@ -65,10 +67,13 @@ After settings let's take a look to `/manifests/init.pp`:
 	  source_mode => "local",
 	  installdir => "/opt/",
 	  tmpdir => "/tmp/",
-	  install_mode => "clean",
-	  data_source => "no", 
+	  install_mode => "custom",
+	  data_source => "no",
+	  driver_db => "yes",
+	  ssl => "no",
 	  users => "yes",
 	  access_log => "yes",
+	  as_service => "yes",
 	  direct_start => "yes"
 	  }
 
@@ -77,7 +82,8 @@ After settings let's take a look to `/manifests/init.pp`:
 	  war_versioned => "no",
 	  war_version => "",
 	  deploy_path => "/release/",
-	  context => "/mycontext",
+	  context => "/example",
+	  symbolic_link => "no",
 	  external_conf => "no",
 	  external_dir => "",
 	  external_conf_path => "",
@@ -85,8 +91,12 @@ After settings let's take a look to `/manifests/init.pp`:
 	  update_version => "55",
 	  installdir => "/opt/",
 	  tmpdir => "/tmp/",
+	  hot_deploy => "yes",
+	  as_service => "yes",
+	  direct_restart => "yes",
 	  require => Tomcat::Setup["tomcat"]
 	  }
+
 
 ```
 
@@ -127,6 +137,7 @@ in `/hiera/data_source.yaml` there are the parameters to customize data source:
 	tomcat::data_source::ds_host: 192.168.52.128
 	tomcat::data_source::ds_port: 1521
 	tomcat::data_source::ds_service: example
+	tomcat::data_source::ds_drivername: ojdbc6.jar
 ```
 
 in `/hiera/configuration.yaml` there are the parameters to customize port and web repository:
@@ -139,6 +150,8 @@ in `/hiera/configuration.yaml` there are the parameters to customize port and we
 	tomcat::params::shutdown_port: 8001
 	tomcat::params::http_connection_timeout: 20000
 	tomcat::params::https_max_threads: 150
+	tomcat::params::https_keystore: keystore
+	tomcat::params::https_keystore_pwd: password
 	tomcat::params::web_repository: http://apache.fastbull.org/tomcat/
 ```
 
