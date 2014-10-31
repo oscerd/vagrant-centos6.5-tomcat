@@ -6,6 +6,6 @@ tomcat::params::shutdown_port: 8001
 tomcat::params::http_connection_timeout: 20000
 tomcat::params::https_max_threads: 150
 tomcat::params::https_keystore: keystore
-tomcat::params::https_keystore_pwd: laziomerda1927
+tomcat::params::https_keystore_pwd: password
 tomcat::params::web_repository: http://apache.fastbull.org/tomcat/
 
