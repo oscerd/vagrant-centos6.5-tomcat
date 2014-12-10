@@ -169,6 +169,17 @@ If you need to undeploy the package of the example you can do in this way:
 	  require => Tomcat::Deploy["deploy"]
 	  }
 ```
+If you need to uninstall the entire tomcat you can do in this way:
+
+```puppet
+	tomcat::uninstall { "uninstall":
+	  family => "7",
+	  update_version => "55",
+	  installdir => "/opt/",
+	  as_service => "yes",
+	  require => Tomcat::Setup["tomcat"]
+	  }
+```
 
 It's important to define a global search path for the `exec` resource to make module work. 
 This should usually be placed in `manifests/site.pp`. It is also important to make sure `unzip` and `tar` command 
@@ -248,6 +259,13 @@ this variable will be ignored. If external_conf is equal to _yes_ this variable 
 *  __Install Directory__: The directory where the Apache Tomcat, that contains the package we are undeploying, is installed (default is `/opt/`)
 *  __As Service__: Define if Tomcat is defined as a service, possible values _yes_ and _no_ (default is _no_). If hot deploy is equal to _no_ then this parameter will be ignored.
 *  __Direct Restart__: Define if Tomcat must directly restart after the undeploy, possible values _yes_ and _no_ (default is _no_). If as service is equal to _yes_ and this parameter is equal to _yes_ then tomcat will be restarted as service (`service tomcat start`) otherwise it will be restarted normally.
+
+The Puppet Tomcat module use the following parameters in his __Uninstall__ phase
+
+*  __Family__: Possible values of installed Apache Tomcat version _6_, _7_, _8_ 
+*  __Update Version__: The update version
+*  __Install Directory__: The directory where the Apache Tomcat is installed (default is `/opt/`)
+*  __As Service__: Define if Tomcat is installed as a service, possible values _yes_ and _no_ (default is _no_). If the value is _yes_ the etc/init.d/tomcat file will be removed during the uninstallation
 
 Customization
 -----------------

@@ -68,3 +68,11 @@ tomcat::undeploy{ "undeploy":
   direct_restart => "yes",
   require =>  Tomcat::Deploy["deploy"]
 }
+
+tomcat::uninstall { "uninstall":
+  family => "7",
+  update_version => "55",
+  installdir => "/opt/",
+  as_service => "yes",
+  require => Tomcat::Undeploy["undeploy"]
+}

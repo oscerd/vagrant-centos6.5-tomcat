@@ -269,7 +269,6 @@ define tomcat::deploy (
 	    if ($restart == 'yes') {
 	      exec { "tomcat::deploy::restart::${war_name}":
 	        command => "${installdir}${tomcat}-${family}.0.${update_version}/bin/startup.sh",
-	        unless  => "ps -eaf | grep ${installdir}${tomcat}-${family}.0.${update_version}",
 	        require => [Exec["tomcat::deploy::stop_tomcat::$war_name"],Exec["tomcat::deploy::move_war::${war_name}"]]
 	       }
 	     }
@@ -278,7 +277,6 @@ define tomcat::deploy (
 	      exec { "tomcat::deploy::restart_tomcat::${war_name}":
 	        command => "service tomcat start",
 	        require => [Exec["tomcat::deploy::stop_tomcat_as_service::$war_name"],Exec["tomcat::deploy::move_war::${war_name}"]],
-	        unless => "ls /etc/init.d/tomcat"
 	      }
 	    }
 	  }

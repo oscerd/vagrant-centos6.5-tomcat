@@ -1,3 +1,8 @@
+## 29-11-2014 - Release - 1.0.5
+### Summary
+- Fix a problem on the tomcat::deploy stage in case of hot deploy disabled
+- This release add a new stage to the module, tomcat::uninstall, that allow to uninstall tomcat
+
 ## 26-10-2014 - Release - 1.0.4
 ### Summary
 - This release add the possibility to add a DB driver to Tomcat lib folder and use it for the data source configuration in tomcat::setup stage
