@@ -180,13 +180,13 @@ in `/hiera/users.yaml` there are the parameters to customize tomcat users:
 		    roles: manager-gui
 ```
 
-With the standard `/manifests/init.pp` the Tomcat installation is set to _clean_, if you choose to change it to _custom_, remember to change port forwarding properties in Vagrantfile:
+With the standard `/manifests/init.pp` the Tomcat installation is set to _custom_, if you choose to change it to _clean_, remember to change port forwarding properties in Vagrantfile:
 
 ```shell
-	config.vm.network "forwarded_port", guest: 8082, host: 9902
+	config.vm.network "forwarded_port", guest: 8080, host: 9902
 ```
 
-by changing guest port from __8080__ to __8082__ as configuration.yaml defines. For more information about customization of Tomcat module see: __https://github.com/oscerd/puppet-tomcat-module__
+by changing guest port from __8082__ to __8080__ as configuration.yaml defines. For more information about customization of Tomcat module see: __https://github.com/oscerd/puppet-tomcat-module__
 
 Usage
 -----------------
@@ -197,8 +197,8 @@ Now you're ready to do:
 	vagrant up
 ```
 
-After starting phase vagrant will start provisioning and Puppet will install Java and Tomcat. With the standard `/manifests/init.pp` Puppet will start Tomcat and deploy sample.war in /webapps/ folder.
-If you choose to set a different deploy path, you have to specify a context, in the example we set context to `/mycontext` and deploy_path to `/release/`, so the webapp will be visible at __http://localhost:9902/mycontext/__
+After starting phase vagrant will start provisioning and Puppet will install Java and Tomcat. With the standard `/manifests/init.pp` Puppet will start Tomcat and deploy sample.war in /release/ folder with context `/example`.
+If you choose to set a different deploy path, you have to specify a context, for example we can set context to `/mycontext` and deploy_path to `/release/`, so the webapp will be visible at __http://localhost:9902/mycontext/__
 
 Remember
 ----------------- 
