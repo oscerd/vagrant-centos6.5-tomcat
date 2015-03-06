@@ -16,9 +16,9 @@ define tomcat::deploy (
   $hot_deploy         = undef,
   $as_service         = undef,
   $direct_restart     = undef) {
-  $extension = ".war"
-  $tomcat = "apache-tomcat"
-  $default_deploy = "/webapps/"
+  $extension = '.war'
+  $tomcat = 'apache-tomcat'
+  $default_deploy = '/webapps/'
 
   # Validate parameters presence
   if ($war_name == undef) {
@@ -32,11 +32,11 @@ define tomcat::deploy (
   if ($update_version == undef) {
     fail('update version parameter must be set')
   }
-  
+
   if ($hot_deploy == undef) {
     fail('hot deploy parameter must be set')
   }
-  
+
   if (($hot_deploy != 'yes') and ($hot_deploy != 'no')) {
     fail('hot deploy parameter must have value "yes" or "no"')
   }
@@ -46,15 +46,15 @@ define tomcat::deploy (
   } else {
     $defined_war_versioned = $war_versioned
   }
-  
+
   if ($as_service == undef) {
-    $defined_as_service = "no"
+    $defined_as_service = 'no'
   } else {
     $defined_as_service = $as_service
   }
-  
+
   if ($direct_restart == undef) {
-    $restart = "yes"
+    $restart = 'yes'
   } else {
     $restart = $direct_restart
   }
@@ -80,8 +80,8 @@ define tomcat::deploy (
   if (($defined_deploy_path != $default_deploy) and ($context == undef)) {
     fail('context parameter must be set if deploy path is different from /webapps/')
   }
-  
-  if (($symbolic_link == undef)){
+
+  if (($symbolic_link == undef)) {
     $defined_symbolic_link = 'no'
   } else {
     $defined_symbolic_link = $symbolic_link
@@ -104,24 +104,24 @@ define tomcat::deploy (
       fail('external dir parameter must be set if external_conf is equal to yes')
     }
   }
-  
-  
-  exec { "tomcat::deploy::sleep_deploy::${war_name}": command => "sleep 10", }
-  
-  if ($hot_deploy == "no"){
-    if ($as_service == "yes"){
+
+  exec { "tomcat::deploy::sleep_deploy::${war_name}": command => 'sleep 10', }
+
+  if ($hot_deploy == 'no') {
+    if ($as_service == 'yes') {
       exec { "tomcat::deploy::stop_tomcat_as_service::${war_name}":
-        command => "service tomcat stop",
+        command => 'service tomcat stop',
         onlyif  => "ps -eaf | grep ${installdir}${tomcat}-${family}.0.${update_version}",
         require => Exec["tomcat::deploy::sleep_deploy::${war_name}"]
-        }
+      }
     } else {
-		  exec { "tomcat::deploy::stop_tomcat::$war_name":
-		    command => "${installdir}${tomcat}-${family}.0.${update_version}/bin/shutdown.sh",
-		    onlyif  => "ps -eaf | grep ${installdir}${tomcat}-${family}.0.${update_version}",
-        require => Exec["tomcat::deploy::sleep_deploy::${war_name}"]}
-		  }
+      exec { "tomcat::deploy::stop_tomcat::${war_name}":
+        command => "${installdir}${tomcat}-${family}.0.${update_version}/bin/shutdown.sh",
+        onlyif  => "ps -eaf | grep ${installdir}${tomcat}-${family}.0.${update_version}",
+        require => Exec["tomcat::deploy::sleep_deploy::${war_name}"]
+      }
     }
+  }
 
   if ($defined_ext_conf == 'yes') {
     exec { "tomcat::deploy::app_conf_path::${war_name}":
@@ -146,7 +146,7 @@ define tomcat::deploy (
     exec { "tomcat::deploy::clean_conf::${war_name}":
       command   => "rm -rf ${defined_tmpdir}${external_dir}",
       require   => Exec["tomcat::deploy::move_conf::${war_name}"],
-      logoutput => "false"
+      logoutput => false
     }
   }
 
@@ -168,7 +168,7 @@ define tomcat::deploy (
       exec { "tomcat::deploy::clean_war::${war_name}":
         command   => "rm -rf ${defined_tmpdir}${war_name}${extension}",
         require   => Exec["tomcat::deploy::move_war::${war_name}"],
-        logoutput => "false"
+        logoutput => false
       }
 
     } elsif ($defined_war_versioned == 'yes') {
@@ -188,7 +188,7 @@ define tomcat::deploy (
       exec { "tomcat::deploy::clean_war::${war_name}":
         command   => "rm -rf ${defined_tmpdir}${war_name}-${war_version}${extension}",
         require   => Exec["tomcat::deploy::move_war::${war_name}"],
-        logoutput => "false"
+        logoutput => false
       }
     }
   } else {
@@ -222,15 +222,18 @@ define tomcat::deploy (
 
       exec { "tomcat::deploy::move_war::${war_name}":
         command => "mv ${defined_tmpdir}${war_name}${extension} ${defined_installdir}${tomcat}-${family}.0.${update_version}${defined_deploy_path}",
-        require => [File["tomcat::deploy::tmp_war::${war_name}"], Exec["tomcat::deploy::create_alternative_deploy_path::${war_name}"], File["tomcat::deploy::app_context_xml::${war_name}"]],
+        require => [
+          File["tomcat::deploy::tmp_war::${war_name}"],
+          Exec["tomcat::deploy::create_alternative_deploy_path::${war_name}"],
+          File["tomcat::deploy::app_context_xml::${war_name}"]],
         unless  => "ls ${defined_installdir}${tomcat}-${family}.0.${update_version}${defined_deploy_path}${war_name}",
         alias   => "tomcat::deploy::move_war::${war_name}"
-      } 
+      }
 
       exec { "tomcat::deploy::clean_war::${war_name}":
         command   => "rm -rf ${defined_tmpdir}${war_name}${extension}",
         require   => Exec["tomcat::deploy::move_war::${war_name}"],
-        logoutput => "false"
+        logoutput => false
       }
 
     } elsif ($defined_war_versioned == 'yes') {
@@ -242,43 +245,49 @@ define tomcat::deploy (
 
       exec { "tomcat::deploy::move_war::${war_name}":
         command => "mv ${defined_tmpdir}${war_name}-${war_version}${extension} ${defined_installdir}${tomcat}-${family}.0.${update_version}${defined_deploy_path}",
-        require => [File["tomcat::deploy::tmp_war::${war_name}-${war_version}"], Exec["tomcat::deploy::create_alternative_deploy_path::${war_name}"], File["tomcat::deploy::app_context_xml::${war_name}"]],
+        require => [
+          File["tomcat::deploy::tmp_war::${war_name}-${war_version}"],
+          Exec["tomcat::deploy::create_alternative_deploy_path::${war_name}"],
+          File["tomcat::deploy::app_context_xml::${war_name}"]],
         unless  => "ls ${defined_installdir}${tomcat}-${family}.0.${update_version}${defined_deploy_path}${war_name}-${war_version}",
         alias   => "tomcat::deploy::move_war::${war_name}"
       }
-      
-      if ($defined_symbolic_link == 'yes'){
-	      exec { "tomcat::deploy::create_ln::${war_name}":
-	        command => "ln -s ${defined_installdir}${tomcat}-${family}.0.${update_version}${defined_deploy_path}${war_name}-${war_version}${extension} ${defined_installdir}${tomcat}-${family}.0.${update_version}${defined_deploy_path}${war_name}${extension}",
-	        require => [File["tomcat::deploy::tmp_war::${war_name}-${war_version}"],Exec["tomcat::deploy::create_alternative_deploy_path::${war_name}"], File["tomcat::deploy::app_context_xml::${war_name}"]],
-	        unless  => "ls ${defined_installdir}${tomcat}-${family}.0.${update_version}${defined_deploy_path}${war_name}${extension}",
-	        alias   => "tomcat::deploy::create_ln::${war_name}"
-	      }
+
+      if ($defined_symbolic_link == 'yes') {
+        exec { "tomcat::deploy::create_ln::${war_name}":
+          command => "ln -s ${defined_installdir}${tomcat}-${family}.0.${update_version}${defined_deploy_path}${war_name}-${war_version}${extension} ${defined_installdir}${tomcat}-${family}.0.${update_version}${defined_deploy_path}${war_name}${extension}",
+          require => [
+            File["tomcat::deploy::tmp_war::${war_name}-${war_version}"],
+            Exec["tomcat::deploy::create_alternative_deploy_path::${war_name}"],
+            File["tomcat::deploy::app_context_xml::${war_name}"]],
+          unless  => "ls ${defined_installdir}${tomcat}-${family}.0.${update_version}${defined_deploy_path}${war_name}${extension}",
+          alias   => "tomcat::deploy::create_ln::${war_name}"
+        }
       }
 
       exec { "tomcat::deploy::clean_war::${war_name}":
         command   => "rm -rf ${defined_tmpdir}${war_name}-${war_version}${extension}",
         require   => Exec["tomcat::deploy::move_war::${war_name}"],
-        logoutput => "false"
+        logoutput => false
       }
     }
   }
 
-  if ($hot_deploy == "no"){ 
-	  if ($defined_as_service == 'no') {
-	    if ($restart == 'yes') {
-	      exec { "tomcat::deploy::restart::${war_name}":
-	        command => "${installdir}${tomcat}-${family}.0.${update_version}/bin/startup.sh",
-	        require => [Exec["tomcat::deploy::stop_tomcat::$war_name"],Exec["tomcat::deploy::move_war::${war_name}"]]
-	       }
-	     }
-	  } elsif ($defined_as_service == "yes") {
-	    if ($restart == 'yes') {
-	      exec { "tomcat::deploy::restart_tomcat::${war_name}":
-	        command => "service tomcat start",
-	        require => [Exec["tomcat::deploy::stop_tomcat_as_service::$war_name"],Exec["tomcat::deploy::move_war::${war_name}"]],
-	      }
-	    }
-	  }
- }
+  if ($hot_deploy == 'no') {
+    if ($defined_as_service == 'no') {
+      if ($restart == 'yes') {
+        exec { "tomcat::deploy::restart::${war_name}":
+          command => "${installdir}${tomcat}-${family}.0.${update_version}/bin/startup.sh",
+          require => [Exec["tomcat::deploy::stop_tomcat::${war_name}"], Exec["tomcat::deploy::move_war::${war_name}"]]
+        }
+      }
+    } elsif ($defined_as_service == 'yes') {
+      if ($restart == 'yes') {
+        exec { "tomcat::deploy::restart_tomcat::${war_name}":
+          command => 'service tomcat start',
+          require => [Exec["tomcat::deploy::stop_tomcat_as_service::${war_name}"], Exec["tomcat::deploy::move_war::${war_name}"]],
+        }
+      }
+    }
+  }
 }
